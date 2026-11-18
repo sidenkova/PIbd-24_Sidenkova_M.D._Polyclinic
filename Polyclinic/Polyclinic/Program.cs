@@ -1,17 +1,29 @@
+using Unity;
+using Polyclinic.Forms;
+using Polyclinic.Repositories;
+using Polyclinic.Repositories.Implementations;
+
 namespace Polyclinic
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            Application.Run(CreateContainer().Resolve<FormMain>());
+        }
+
+        private static IUnityContainer CreateContainer()
+        {
+            var container = new UnityContainer();
+            container.RegisterType<IPatientRepository, PatientRepository>();
+            container.RegisterType<IDoctorRepository, DoctorRepository>();
+            container.RegisterType<IDiseaseRepository, DiseaseRepository>();
+            container.RegisterType<IVisitRepository, VisitRepository>();
+            container.RegisterType<ISickLeaveRepository, SickLeaveRepository>();
+            container.RegisterType<IPatientDoctorRepository, PatientDoctorRepository>();
+            return container;
         }
     }
 }
