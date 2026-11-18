@@ -37,10 +37,33 @@ namespace Polyclinic.Forms
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBoxFullName.Text)) return;
-            var doctor = Doctor.CreateEntity(_doctorId ?? 0, textBoxFullName.Text, (Specialization)comboBoxSpecialization.SelectedItem, textBoxPhone.Text);
-            if (_doctorId.HasValue) _repository.UpdateDoctor(doctor); else _repository.CreateDoctor(doctor);
-            Close();
+            if (string.IsNullOrWhiteSpace(textBoxFullName.Text) || string.IsNullOrWhiteSpace(textBoxPhone.Text))
+            {
+                MessageBox.Show("Заполните ФИО и Телефон!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var doctor = Doctor.CreateEntity(
+                _doctorId ?? 0,
+                textBoxFullName.Text,
+                (Specialization)comboBoxSpecialization.SelectedItem,
+                textBoxPhone.Text
+            );
+
+            try
+            {
+                if (_doctorId.HasValue)
+                    _repository.UpdateDoctor(doctor);
+                else
+                    _repository.CreateDoctor(doctor);
+
+                Close();
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                MessageBox.Show("Ошибка при сохранении: " + errorMsg, "Ошибка БД", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e) => Close();

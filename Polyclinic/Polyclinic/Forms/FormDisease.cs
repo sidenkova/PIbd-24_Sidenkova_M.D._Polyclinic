@@ -17,7 +17,12 @@ namespace Polyclinic.Forms
         private readonly IDiseaseRepository _repository;
         private int? _diseaseId;
 
-        public FormDisease(IDiseaseRepository repository) { InitializeComponent(); _repository = repository; }
+        public FormDisease(IDiseaseRepository repository)
+        {
+            InitializeComponent();
+            _repository = repository;
+        }
+
         public void SetDiseaseId(int value)
         {
             var disease = _repository.ReadDiseaseById(value);
@@ -26,13 +31,33 @@ namespace Polyclinic.Forms
             textBoxCode.Text = disease.Code;
             _diseaseId = value;
         }
+
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBoxName.Text)) return;
+            if (string.IsNullOrWhiteSpace(textBoxName.Text) || string.IsNullOrWhiteSpace(textBoxCode.Text))
+            {
+                MessageBox.Show("Заполните название и код!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             var disease = Disease.CreateEntity(_diseaseId ?? 0, textBoxName.Text, textBoxCode.Text);
-            if (_diseaseId.HasValue) _repository.UpdateDisease(disease); else _repository.CreateDisease(disease);
-            Close();
+
+            try
+            {
+                if (_diseaseId.HasValue)
+                    _repository.UpdateDisease(disease);
+                else
+                    _repository.CreateDisease(disease);
+
+                Close();
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                MessageBox.Show("Ошибка при сохранении: " + errorMsg, "Ошибка БД", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
         private void buttonCancel_Click(object sender, EventArgs e) => Close();
     }
 }

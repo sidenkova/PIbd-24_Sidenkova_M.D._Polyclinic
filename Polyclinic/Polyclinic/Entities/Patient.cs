@@ -8,11 +8,11 @@ namespace Polyclinic.Entities
 {
     public class Patient
     {
-        public int Id { get; private set; }
-        public string FullName { get; private set; } = string.Empty;
-        public DateTime BirthDate { get; private set; }
-        public string Phone { get; private set; } = string.Empty;
-        public string Address { get; private set; } = string.Empty;
+        public int Id { get; internal set; }
+        public string FullName { get; internal set; } = string.Empty;
+        public DateTime BirthDate { get; internal set; }
+        public string Phone { get; internal set; } = string.Empty;
+        public string Address { get; internal set; } = string.Empty;
 
         public static Patient CreateEntity(int id, string fullName, DateTime birthDate, string phone, string address)
         {

@@ -9,10 +9,10 @@ namespace Polyclinic.Entities
 {
     public class Doctor
     {
-        public int Id { get; private set; }
-        public string FullName { get; private set; } = string.Empty;
-        public Specialization Specialization { get; private set; }
-        public string Phone { get; private set; } = string.Empty;
+        public int Id { get; internal set; }
+        public string FullName { get; internal set; } = string.Empty;
+        public Specialization Specialization { get; internal set; }
+        public string Phone { get; internal set; } = string.Empty;
 
         public static Doctor CreateEntity(int id, string fullName, Specialization specialization, string phone)
         {

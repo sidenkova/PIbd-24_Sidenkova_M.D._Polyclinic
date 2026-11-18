@@ -8,9 +8,9 @@ namespace Polyclinic.Entities
 {
     public class Disease
     {
-        public int Id { get; private set; }
-        public string Name { get; private set; } = string.Empty;
-        public string Code { get; private set; } = string.Empty;
+        public int Id { get; internal set; }
+        public string Name { get; internal set; } = string.Empty;
+        public string Code { get; internal set; } = string.Empty;
 
         public static Disease CreateEntity(int id, string name, string code)
         {
