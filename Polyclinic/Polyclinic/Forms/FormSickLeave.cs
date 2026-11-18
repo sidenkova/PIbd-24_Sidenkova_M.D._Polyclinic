@@ -27,9 +27,30 @@ namespace Polyclinic.Forms
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            if (comboBoxPatient.SelectedIndex < 0 || comboBoxDoctor.SelectedIndex < 0) return;
-            _sickLeaveRepo.CreateSickLeave(SickLeave.CreateOperation(0, (int)comboBoxPatient.SelectedValue, (int)comboBoxDoctor.SelectedValue, dateTimePickerStart.Value, dateTimePickerEnd.Value));
-            Close();
+            if (comboBoxPatient.SelectedIndex < 0 || comboBoxDoctor.SelectedIndex < 0)
+            {
+                MessageBox.Show("Выберите пациента и врача!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var sickLeave = SickLeave.CreateOperation(
+                0,
+                (int)comboBoxPatient.SelectedValue!,
+                (int)comboBoxDoctor.SelectedValue!,
+                dateTimePickerStart.Value,
+                dateTimePickerEnd.Value
+            );
+
+            try
+            {
+                _sickLeaveRepo.CreateSickLeave(sickLeave);
+                Close();
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                MessageBox.Show("Ошибка при сохранении: " + errorMsg, "Ошибка БД", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

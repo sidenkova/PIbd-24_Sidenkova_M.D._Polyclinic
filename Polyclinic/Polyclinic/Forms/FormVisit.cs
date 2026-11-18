@@ -33,11 +33,34 @@ namespace Polyclinic.Forms
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            if (comboBoxPatient.SelectedIndex < 0 || comboBoxDoctor.SelectedIndex < 0 || comboBoxDisease.SelectedIndex < 0) return;
+            if (comboBoxPatient.SelectedIndex < 0 || comboBoxDoctor.SelectedIndex < 0 || comboBoxDisease.SelectedIndex < 0)
+            {
+                MessageBox.Show("Выберите пациента, врача и болезнь!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             Symptoms symptoms = Symptoms.None;
-            foreach (var item in checkedListBoxSymptoms.CheckedItems) symptoms |= (Symptoms)item;
-            _visitRepo.CreateVisit(Visit.CreateOperation(0, (int)comboBoxPatient.SelectedValue, (int)comboBoxDoctor.SelectedValue, (int)comboBoxDisease.SelectedValue, symptoms));
-            Close();
+            foreach (var item in checkedListBoxSymptoms.CheckedItems)
+                symptoms |= (Symptoms)item;
+
+            var visit = Visit.CreateOperation(
+                0,
+                (int)comboBoxPatient.SelectedValue!,
+                (int)comboBoxDoctor.SelectedValue!,
+                (int)comboBoxDisease.SelectedValue!,
+                symptoms
+            );
+
+            try
+            {
+                _visitRepo.CreateVisit(visit);
+                Close();
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                MessageBox.Show("Ошибка при сохранении: " + errorMsg, "Ошибка БД", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
